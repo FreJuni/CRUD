@@ -1,8 +1,10 @@
-import { Link, useLoaderData,useSubmit,redirect, json } from "react-router-dom"
+import { Link, useLoaderData,useSubmit,redirect, json, useRouteLoaderData } from "react-router-dom"
+import { getToken } from "../util/getToken";
 
 const SingleInfoItem = () => {
     const data = useLoaderData();
     const submit = useSubmit();
+    const isToken = useRouteLoaderData("root");
 
     const {id,date,title,image,description} = data;
 
@@ -24,10 +26,15 @@ const SingleInfoItem = () => {
         <img src={image} alt={title} />
         <p>.{description}</p>
         <div className="btn-con">
-           <Link to={`/edit-post/${id}`}>
-           <p className="btn edit">Edit</p>
-           </Link>
-            <p className="btn delete" onClick={deleteHandler} > Delete</p>
+           {
+            isToken && (
+            <>
+                <Link to={`/edit-post/${id}`}>
+                <p className="btn edit">Edit</p>
+                </Link>
+                <p className="btn delete" onClick={deleteHandler} > Delete</p>
+            </>)
+           }
         </div>
     </div>
   )
@@ -47,8 +54,12 @@ export const loader = async ({request,params}) => {
 
 export const action = async ({request,params}) => {
     const id = params.id;
+    const token = getToken();
     const response = await fetch(`http://localhost:8080/posts/${id}`, {
         method : request.method,
+        headers : {
+            Authorization : "Bearer " + token,
+        }
     })
 
     if(!response.ok) {

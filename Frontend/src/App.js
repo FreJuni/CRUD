@@ -12,27 +12,38 @@ import Error from "./pages/Error";
 import Edit from "./pages/Edit";
 import { action as postAction } from "./pages/CreatePost";
 import { action as editAction, loader as editLoader } from "./pages/Edit";
+import Auth, { action as authAction } from "./pages/Auth";
+import { checkTokenLoader, logout, tokenLoader } from "./util/getToken";
 
 const router = createBrowserRouter([
   {
     path: "",
     element: <Main />,
     errorElement: <Error />,
+    id: "root",
+    loader: tokenLoader,
     children: [
       { index: true, element: <Post />, loader: postLoader },
-      { path: "/create-post/", element: <CreatePost />, action: postAction },
+      {
+        path: "/create-post/",
+        element: <CreatePost />,
+        loader: checkTokenLoader,
+        action: postAction,
+      },
       {
         path: "/single-post/:id",
         element: <SingleInfoItem />,
         loader: singlePost,
         action: singleAction,
       },
+      { path: "/logout", loader: logout },
       {
         path: "/edit-post/:id",
         element: <Edit />,
         loader: editLoader,
         action: editAction,
       },
+      { path: "/auth", element: <Auth />, action: authAction },
     ],
   },
 ]);

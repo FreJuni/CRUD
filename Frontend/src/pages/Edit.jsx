@@ -1,6 +1,7 @@
 import uuid from "react-uuid";
 import PostForm from "../coponents/PostForm"
 import { json, redirect, useActionData, useLoaderData } from "react-router-dom";
+import { getToken } from "../util/getToken";
 
 
 const Edit = () => {
@@ -41,6 +42,7 @@ export const loader = async ({request,params}) => {
 export const action = async ({request,params}) => {
   const id = params.id;
   const data = await request.formData();
+  const token = getToken();
 
   const editData = {
     id : uuid(),
@@ -53,7 +55,8 @@ export const action = async ({request,params}) => {
   const response = await fetch(`http://localhost:8080/posts/${id}`, {
     method : request.method,
     headers : {
-      "Content-Type" : "application/json"
+      "Content-Type" : "application/json",
+      Authorization : "Bearer " + token,
     },
     body : JSON.stringify(editData),
   });

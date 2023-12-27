@@ -1,7 +1,10 @@
-import { Form} from "react-router-dom"
+import { Form, useNavigation} from "react-router-dom"
 
 
 const PostForm = ({title,button,method,post,errArray}) => {
+
+    const navigation = useNavigation();
+    const isSubmiting = navigation.state === "submitting";
 
 
   return (
@@ -42,7 +45,7 @@ const PostForm = ({title,button,method,post,errArray}) => {
                     })
                 )}
                 <label htmlFor="date">Date</label>
-                <input type="date" name="date" defaultValue={post ? post.image : ""}  />
+                <input type="date" name="date" defaultValue={post ? post.date : ""}  />
             </div>
             <div className="form-input">
                 {errArray && (
@@ -56,7 +59,7 @@ const PostForm = ({title,button,method,post,errArray}) => {
                 <label htmlFor="description">Description</label>
                 <textarea name="description" id="description." defaultValue={post ? post.description : ""} ></textarea>
             </div>
-            <button className="post-btn">{button}</button>
+            <button className="post-btn">{isSubmiting ? "Submitting" : button}</button>
         </Form>
     </div>
   )
